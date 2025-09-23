@@ -15,7 +15,7 @@
             <h:panelGroup rendered="#{managerSolicitacao.view}">
                 <div class="d-flex justify-content-between">
                     <h5>N° Protocolo: #{managerSolicitacao.solicitacao.numeroProtocolo}</h5>  
-                    <div style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white" >#{managerSolicitacao.solicitacao.statusSolicitacao.nome}</div>
+                    <div style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(managerSolicitacao.solicitacao.statusSolicitacao)}; color: white" >#{managerSolicitacao.solicitacao.statusSolicitacao.nome}</div>
                 </div>
             </h:panelGroup>
 
@@ -82,7 +82,7 @@
             </p:column>
 
             <p:column headerText="Satus">
-                <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white"
+                <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(s.statusSolicitacao)}; color: white"
                                value="#{s.statusSolicitacao.nome}" />
             </p:column>
         </p:dataTable>

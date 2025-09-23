@@ -103,4 +103,19 @@ public class ManagerSolicitacao extends GenericManager {
         return DateUtil.formatarData(date);
     }
     
+    public String backgroundStatus(StatusSolicitacao status) {
+        
+        switch (status) {
+            case PENDENTE:
+                return "#ffb700";
+            case EM_ANDAMENTO:
+                return "#1e96fc";
+            case CONCLUIDO:
+                return "16db65";
+            default:
+                break;
+        }
+        return "";
+    }
+    
 }

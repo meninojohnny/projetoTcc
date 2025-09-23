@@ -69,6 +69,7 @@ public class ManagerCidadao extends GenericManager {
     @Override
     public void instantiate() {
         instanciarCidadao();
+        instnaciarUsuario();
     }
     
     public void instanciarCidadao() {
@@ -88,7 +89,7 @@ public class ManagerCidadao extends GenericManager {
 
     @Override
     public String getUrlView() {
-        return "view.xhtml?view=" + this.cidadao.getId();
+        return "cidadao.xhtml?view=" + this.cidadao.getId();
     }
     
     public void pesquisarCep() {
