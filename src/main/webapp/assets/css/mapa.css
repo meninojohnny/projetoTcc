@@ -1,0 +1,73 @@
+.lote-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    text-shadow: 1px 1px 2px white;
+    pointer-events: none; /* Evita interação do mouse com o texto */
+    white-space: nowrap; /* Garante que o texto permaneça em uma linha */
+}
+.quadra-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    text-shadow: 1px 1px 2px white;
+    pointer-events: none; /* Evita interação do mouse com o texto */
+    white-space: nowrap; /* Garante que o texto permaneça em uma linha */
+}
+.custom-tooltip {
+    background-color: white;
+    border: 1px solid black;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+.custom-ponto-icon .ponto-container {
+    position: relative;
+    width: 20px; /* Largura do círculo */
+    height: 20px; /* Altura do círculo */
+    background-color: red; /* Cor do círculo */
+    border-radius: 50%; /* Faz o formato ser um círculo */
+    display: flex; /* Para centralizar o texto */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    color: white; /* Cor do texto */
+    font-size: 12px; /* Tamanho do texto */
+    font-weight: bold; /* Texto em negrito */
+    text-align: center;
+}
+.custom-ponto-icon .ponto-texto {
+    line-height: 1; /* Ajusta o alinhamento vertical do texto */
+    white-space: nowrap; /* Evita quebra de linha */
+}
+.leaflet-control-layers label {
+    text-align: left !important;
+    display: block !important; /* Garante que os labels ocupem a largura total */
+    padding-left: 5px; /* Ajuste para garantir um pequeno espaço à esquerda, se necessário */
+}
+.btn-primary1 {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 5px 7px;
+    background-color: #06c !important; /* Azul atualizado com prioridade */
+    color: white !important; /* Cor inicial do ícone */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Animação suave */
+}
+
+.btn-primary1 .pi {
+    color: #ffffff; /* Branco inicialmente */
+}
+
+.btn-primary1:hover {
+    background-color: white; /* Fundo branco no hover */
+    color: #003882; /* Texto e bordas azuis no hover */
+}
+
+.btn-primary1:hover .pi {
+    color: #000000; /* Ícone azul no hover */
+}
+
+.leaflet-container {
+    z-index: 0 !important; /* Mantém o mapa no fundo */
+}

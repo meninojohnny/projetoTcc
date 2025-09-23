@@ -1,0 +1,532 @@
+<!--
+A JSF2 Leaflet wrapper component for OpenStreetMap
+Copyright (C) 2015 Leonardo Ciocari
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:composite="http://java.sun.com/jsf/composite"
+        >
+
+<composite:interface componentType="mapAdvanced">
+    <composite:attribute name="map" type="java.lang.Object" />
+        <composite:attribute name="remoteCommandOnClickLote" type="java.lang.String" />
+        <composite:attribute name="idNucleo" type="java.lang.String" />
+</composite:interface>
+
+<composite:implementation>
+    
+    <style type="text/css">
+        .leaflet-control-layers-toggle {
+            background-image: url('#{resource['images:layers.png']}') !important;
+            }
+                        .pt-icon {
+                        color: white;
+                        background-color: blue;
+                        font-size: 85%;
+                        border-radius: 50%;
+                        vertical-align: middle;
+                        display:flex;
+                        justify-content: center;
+                        align-items: center;
+                      }
+    </style>
+
+    <div id="#{cc.attrs.id}" style="width:#{cc.mapObject.width}; height:#{cc.mapObject.height}"/>
+
+    <script type="text/javascript">
+        var map_#{cc.attrs.id} = L.map('#{cc.attrs.id}', {  
+                    center: [#{cc.mapObject.center.latitude},#{cc.mapObject.center.longitude}],
+                    dragging: #{cc.mapObject.draggingEnabled},
+                    zoomControl: #{cc.mapObject.zoomControl} ,
+                    zoom: #{cc.mapObject.zoom},
+                    minZoom: #{cc.mapObject.minZoom},
+                    maxZoom: #{cc.mapObject.maxZoom}
+                });
+                
+        L.tileLayer('#{cc.mapObject.urlTemplate}', {id: 'osm', attribution: '#{cc.mapObject.attribution}', maxZoom: #{cc.mapObject.maxZoom}, minZoom: #{cc.mapObject.minZoom}}).addTo(map_#{cc.attrs.id});                
+                
+        if(#{cc.mapObject.layerControl}){
+                    var layers = L.control.layers(null, null, {autoZIndex: false});
+                }
+    
+                if ('#{cc.attrs.idNucleo}' !== ''){
+                    var ortofotoLayer = L.tileLayer('ortofotos/#{cc.attrs.idNucleo}/{z}/{x}/{y}.jpg', {tms: true,id: 'ortofotos', pane: 'tilePane', attribution: '#{cc.mapObject.attribution}', maxZoom: #{cc.mapObject.maxZoom}, minZoom: #{cc.mapObject.minZoom}}).addTo(map_#{cc.attrs.id});
+                    layers.addOverlay(ortofotoLayer, 'Ortofoto');
+                }
+        
+        if(!#{cc.mapObject.zoomEnabled}){
+                    map_#{cc.attrs.id}.touchZoom.disable();
+                    map_#{cc.attrs.id}.doubleClickZoom.disable();
+                    map_#{cc.attrs.id}.scrollWheelZoom.disable();
+                    map_#{cc.attrs.id}.boxZoom.disable();
+                    map_#{cc.attrs.id}.keyboard.disable();
+        }
+
+        if(#{cc.mapObject.miniMap}){
+                    new L.Control.MiniMap(L.tileLayer('#{cc.mapObject.urlTemplate}', {}), {
+                            toggleDisplay: true,
+                            zoomAnimation: true,
+                            position: '#{cc.mapObject.miniMapPosition}',
+                            width: #{cc.mapObject.miniMapWidth},
+                            height: #{cc.mapObject.miniMapHeight}
+                    }).addTo(map_#{cc.attrs.id});
+        }
+                
+                var layerList = [];
+                var polygons  = [];
+                var polylines = [];
+                var popupList = {};
+                var dimensionLayer = L.layerGroup();
+                var pointsLayer = L.layerGroup();
+                layers.addOverlay(pointsLayer, 'Pontos');
+                layers.addOverlay(dimensionLayer, 'Dimensões');
+        //Layers
+        <ui:repeat value="#{cc.mapObject.layers}" var="layer">    
+            
+                    layerList.push(#{layer.clusterEnabled}?new L.MarkerClusterGroup({ disableClusteringAtZoom: #{layer.clusterDisableAtZoom}, maxClusterRadius: #{layer.clusterMaxRadius}}):new L.LayerGroup());
+
+                    if(#{cc.mapObject.layerControl}){
+                            layers.addOverlay(layerList[layerList.length - 1],"#{layer.label}");
+                    }
+                    var contador = 0;
+                    //Markers
+                    <ui:repeat value="#{layer.markers}" var="marker">
+                        var myIcon = L.icon({
+                            iconUrl: "#{resource['images:marker-icon.png']}",
+                            iconSize: [25, 41],
+                            iconAnchor: [25, 41],
+                            popupAnchor: [25, 41]
+                        });
+                         if('#{marker.label}' === 'ponto_coleta'){
+
+                        if (#{marker.position.latitude} !== null){
+                            if(#{marker.position.longitude} !== null){
+                                var marker = L.marker(
+                                    [#{marker.position.latitude}, #{marker.position.longitude}],
+                                    {
+                                        icon: myIcon,
+                                        draggable: #{marker.draggable},
+                                    }
+                                );
+                                if(!#{marker.pulse.pulsing}) {
+                                        var icon = new L.Icon({iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [0, -45], iconUrl: '#{resource['images:marker-icon.png']}', shadowUrl: '#{resource['images:marker-shadow.png']}'});
+                                } else {
+                                        var icon = L.icon.pulse({iconSize:[#{marker.pulse.size},#{marker.pulse.size}],color:'#{marker.pulse.color}'});
+                                }
+                                
+                                if('#{marker.label}' === 'ponto_coleta'){
+                                    marker.on('drag', function(e){
+                                        let latitudeInput = document.getElementById('imovelForm:tabViewImovel:latitudeInputText');
+                                        let longitudeInput = document.getElementById('imovelForm:tabViewImovel:longitudeInputText');
+                                        if (latitudeInput !== null){
+                                            if (longitudeInput !== null){
+                                                latitudeInput.value = e.latlng.lat;
+                                                longitudeInput.value = e.latlng.lng;
+                                            }
+                                        }
+                                    })
+                                }
+
+                                if('#{marker.popupMsg}'){
+                                        marker.bindPopup('#{marker.popupMsg}');
+                                }
+                                marker.addTo(layerList[layerList.length - 1]);
+                                map_#{cc.attrs.id}.addLayer(layerList[layerList.length - 1]);
+                            }
+                        }}
+                    </ui:repeat>
+                    
+                     <ui:repeat value="#{layer.markers}" var="marker">
+                     
+                        var myIcon = L.icon({
+                            iconUrl: "javax.faces.resource/images/points/point_"+contador+".png.xhtml",
+                           iconSize: [16, 16],
+                           iconAnchor: [7, 7]
+                        });
+                         if('#{marker.label}' === 'ponto_coordenada'){
+                        if (#{marker.position.latitude} !== null){
+                            if(#{marker.position.longitude} !== null){
+                                var marker = L.marker(
+                                    [#{marker.position.latitude}, #{marker.position.longitude}],
+                                    {
+                                        icon: myIcon,
+                                        draggable: #{marker.draggable},
+                                    }
+                                );
+                                if(!#{marker.pulse.pulsing}) {
+                                        var icon = new L.Icon({iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [0, -45], iconUrl: '#{resource['images:marker-icon.png']}', shadowUrl: '#{resource['images:marker-shadow.png']}'});
+                                } else {
+                                        var icon = L.icon.pulse({iconSize:[#{marker.pulse.size},#{marker.pulse.size}],color:'#{marker.pulse.color}'});
+                                }
+                                
+                                if('#{marker.label}' === 'ponto_coleta'){
+                                    marker.on('drag', function(e){
+                                        let latitudeInput = document.getElementById('imovelForm:tabViewImovel:latitudeInputText');
+                                        let longitudeInput = document.getElementById('imovelForm:tabViewImovel:longitudeInputText');
+                                        if (latitudeInput !== null){
+                                            if (longitudeInput !== null){
+                                                latitudeInput.value = e.latlng.lat;
+                                                longitudeInput.value = e.latlng.lng;
+                                            }
+                                        }
+                                    })
+                                }
+
+                                if('#{marker.popupMsg}'){
+                                        marker.bindPopup('#{marker.popupMsg}');
+                                }
+                                marker.addTo(layerList[layerList.length - 1]);
+                                map_#{cc.attrs.id}.addLayer(layerList[layerList.length - 1]);
+                            }
+                        }
+                        }
+                        contador++;
+                    </ui:repeat>
+
+                    //Polylines
+                    <ui:repeat value="#{layer.polylines}" var="polyline" varStatus="pline">
+                        var points_#{polyline.id} = [];
+               
+                        <ui:repeat value="#{polyline.points}" var="point" varStatus="pPoints">
+                                points_#{polyline.id}.push(L.latLng(#{point.latitude},#{point.longitude}));
+                                // Draw circles on every point
+                                if (#{polyline.mostrarPontos}){
+                                        var myIcon = L.divIcon({
+                                        iconSize: new L.Point(20, 20),
+                                        html: 'P#{pPoints.index}',
+                                        className: 'pt-icon'
+                                    });
+                                   var myIcon = L.icon({
+                                       iconUrl: "javax.faces.resource/images/points/point_#{pPoints.index}.png.xhtml",
+                                       iconSize: [16, 16],
+                                       iconAnchor: [7, 7]
+                                   });
+                                   L.marker([#{point.latitude}, #{point.longitude}], {icon: myIcon}).addTo(pointsLayer);
+                                   #{pPoints.index + 1}
+                                }
+                        </ui:repeat>
+                        var polyProperties = {
+                                 idLote: '#{polyline.id}',
+                                 label:'#{polyline.label}',
+                                 numLote: '#{polyline.numLote}',
+                                 letraLote: '#{polyline.letraLote}',
+                                 numQuadra: '#{polyline.quadra}',
+                                 corNumLote: '#{polyline.corNumLote}',
+                                 color: '#{polyline.color}',
+                                 weight: #{polyline.weight},
+                                 popupId: '#{polyline.popupId}',
+                                 popupContent: '#{polyline.popupContent}',
+                                 loteVinculado: '#{polyline.loteVinculado}',
+                                 pane: 'shadowPane'
+                        }
+                        
+                        polylines.push(L.polyline(points_#{polyline.id}, polyProperties));
+                        polygons.push(L.polygon(points_#{polyline.id}, polyProperties).addTo(layerList[layerList.length - 1]));
+                        if ('#{polyline.quadra}' != ''){
+                            if('#{polyline.numLote}' != ''){
+                                var textoQuadraLetraLote = [];
+                                if ('#{polyline.quadra}' !== ''){
+                                    ('#{polyline.quadra}' !== 'null') ? textoQuadraLetraLote.push('Q#{polyline.quadra}') : null;
+                                }
+                                if ('#{polyline.letraLote}' !== ''){
+                                    ('#{polyline.letraLote}' !== 'null') ? textoQuadraLetraLote.push('L#{polyline.letraLote}') : null;
+                                }
+                                if ('#{polyline.quadra}' !== ''){
+                                    ('#{polyline.quadra}' !== 'null') ? textoQuadraLetraLote.push('L#{polyline.numLote}') : null;
+                                }
+                                var stringFinal = textoQuadraLetraLote.join('-');
+                                polygons[polygons.length - 1].bindTooltip(stringFinal);
+                            }
+                        }
+
+                        if (#{polyline.mostrarPontos}){
+                            var polygonPoints = [];
+                            var polygonDimen = [];
+                            <ui:repeat value="#{polyline.points}" var="point">
+                                polygonPoints.push(L.latLng(#{point.latitude},#{point.longitude}));
+                            </ui:repeat>
+                              <ui:repeat value="#{layer.dimensoes}" var="dimen">
+                              var dimesao = {
+                                distancia : #{dimen.distancia},
+                                pontoInicial : #{dimen.pontoInicial},
+                                pontoFinal : #{dimen.prontoFinal}
+                                    }
+                                polygonDimen.push(dimesao);
+                            </ui:repeat>
+
+                            polygonPoints.forEach(function(element, index, array){
+
+                                if(index &lt;&eq; (polygonPoints.length - 1)){
+
+                                   var lentgh = polygonDimen.length;
+                                    let firstPoint = polygonPoints[index];
+                                    let nextPoint = polygonPoints[index + 1];
+                                    let distanceInMeters = map_#{cc.attrs.id}.distance(firstPoint,nextPoint);
+                                    if(polygonDimen.length > 0){
+                                       if(polygonDimen[index].pontoInicial !==''){
+                                        if(polygonDimen[index].pontoFinal !== ''){
+                                            if(polygonDimen[index].pontoInicial == index+1){
+                                                if(polygonDimen[index].pontoFinal == index+2){
+                                                   let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                                   let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                                   polyline.setText(polygonDimen[index].distancia + 'm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                                                }else if(polygonDimen[index].pontoFinal == 1){
+                                                    let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                                    let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                                     polyline.setText(polygonDimen[index].distancia+ 'bm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                                                }else{
+                                                   let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                                 let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                                 polyline.setText(polygonDimen[index].distancia+33+ 'am', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                        
+                                                }
+                                                
+                                            }else if(polygonDimen[index].pontoFinal == 1){
+                                                 let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                                 let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                                 polyline.setText(polygonDimen[index].distancia+ 'm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                                            }else{
+                                                   let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                                 let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                                 polyline.setText(polygonDimen[index].distancia+'m', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                        
+                                                }
+                                        }
+                                    }else{
+                                    let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                        let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                        polyline.setText(index+3+ 'm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                                    }
+                                    }else{
+                                        
+                                        if(index &lt;&eq; (polygonPoints.length - 1)){
+                                    let firstPoint = polygonPoints[index];
+                                    let nextPoint = polygonPoints[index + 1];
+                                    let distanceInMeters = map_#{cc.attrs.id}.distance(firstPoint,nextPoint);
+                                    if (distanceInMeters > 0){
+                                        let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+                                        let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+                                        polyline.setText(distanceInMeters.toFixed(2) + 'm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+                                    }
+                                }
+                                    }
+                                   
+//                                    
+//                     if (distanceInMeters > 0){
+//                                        let middlePointLatLng = L.bounds( firstPoint, nextPoint ).getCenter();
+//                                        let polyline = L.polyline([firstPoint, nextPoint], {color: "transparent", measure: true}).addTo(dimensionLayer);
+//                                        polyline.setText(distanceInMeters.toFixed(2) + 'm', {offset: -8, center: true, repeat: false, attributes: {fill: '#{polyline.dimensoesCorTexto} '}});
+//                                                 } 
+                                                 }
+                            });
+                        }
+                        
+                        //Click Events
+                        
+                        polygons[polygons.length - 1].on('click', function(){
+                            let polygon = this;
+                            let popupId = this.options.popupId;
+                            if (popupId !== ''){
+                                let element = popupList[popupId];
+                                if (element !== null){
+                                    if(element !== undefined){
+                                        element.setLatLng(polygon.options.latLngCenter).openOn(map_#{cc.attrs.id});
+                                    }
+                                }
+                            }
+                        })
+                        
+                        if ('#{cc.attrs.remoteCommandOnClickLote}' !== ''){
+                            if ('#{polyline.label}' === 'Lote'){
+                                polygons[polygons.length - 1].on('dblclick', function(){
+                                    window['#{cc.attrs.remoteCommandOnClickLote}']([
+                                        {name :'idLote', value: this.options.idLote},
+                                        {name :'letraLote', value: this.options.letraLote},
+                                        {name :'numQuadra', value: this.options.numQuadra}
+                                    ]);
+                                })
+                            }
+                        }
+
+                        polylines[polylines.length - 1].addTo(layerList[layerList.length - 1]);
+                        
+                    </ui:repeat>
+                    //Circles
+                    <ui:repeat value="#{layer.circles}" var="circle">
+                        var circle = L.circle([#{circle.position.latitude},#{circle.position.longitude}], #{circle.radius},{color: '#{circle.color}',  weight: #{circle.weight}, fillColor: '#{circle.fillColor}', fillOpacity: #{circle.fillOpacity}});
+
+                        if('#{circle.popupMsg}'){
+                                circle.bindPopup('#{circle.popupMsg}');
+                        }
+
+                        circle.addTo(layerList[layerList.length - 1]);
+                    </ui:repeat>
+
+                    //Popups
+                    <ui:repeat value="#{layer.popups}" var="popup">
+                        var popup = L.popup({
+                            id: '#{popup.id}',
+                            maxWidth: #{popup.maxWidth},
+                            minWidth: #{popup.minWidth},
+                            maxHeight: #{popup.maxHeight ne null ? popup.maxHeight : 'null'},
+                            autoPan: #{popup.autoPan},
+                            autoPanPaddingTopLeft: null,
+                            autoPanPaddingBottomRight: null,
+                            autoPanPadding: L.point(5,5),
+                            keepInView: #{popup.keepInView},
+                            closeButton: #{popup.closeButton},
+                            autoClose: #{popup.autoClose},
+                            closeOnEscapeKey: #{popup.closeOnEscapeKey},
+                            closeOnClick: #{popup.closeOnClick},
+                            className: '#{popup.className}'
+                        })
+                        .setLatLng(L.latLng(#{popup.latlong ne null ? popup.latlong.latitude : 'null'}, #{popup.latlong ne null ? popup.latlong.longitude : 'null'}))
+                        .setContent('#{popup.content}');
+                        popupList['#{popup.id}'] = popup;
+                    </ui:repeat>
+
+                    if(#{layer.checked}){
+                        map_#{cc.attrs.id}.addLayer(layerList[layerList.length - 1]);
+                        
+                        for(n in polygons){
+                            if (polygons[n].options.label === 'Lote'){
+                                let latlngCenter = [
+                                        [polygons[n].getCenter().lat, L.latLngBounds(polygons[n].getLatLngs())._southWest.lng],
+                                        [polygons[n].getCenter().lat, L.latLngBounds(polygons[n].getLatLngs())._northEast.lng]
+                                ];
+                                poly = L.polyline(latlngCenter, {color: 'transparent'}).addTo(layerList[layerList.length - 1]);
+                                polygons[n].options.latLngCenter = poly.getCenter();
+                               var texto = ""
+                               if(polygons[n].options.letraLote != 'null'){
+                                   if(polygons[n].options.letraLote.length > 0){
+                                 texto =    polygons[n].options.numLote +"-"+ polygons[n].options.letraLote;}else{
+                                  texto =  polygons[n].options.numLote;
+                                 }
+                                }else{
+                                    texto =  polygons[n].options.numLote;
+                                    
+                                }
+                                poly.setText(texto, {offset: 4, center: true, repeat: false, attributes: {fill: polygons[n].options.corNumLote}});
+                            }
+                        }
+                    }            
+                    
+        </ui:repeat>
+                
+                function showPopup(id){
+                    let element = popupList[id];
+                    if (element !== null){
+                        if(element !== undefined){
+                            element.openOn(map_#{cc.attrs.id});
+                        }
+                    }
+                }
+                
+                function setCoresLote(numLote, numQuadra, corFundo, corBorda){
+                    map_#{cc.attrs.id}.eachLayer(function(layer){
+                        if(layer.options !== undefined){
+                            if (parseInt(layer.options.numLote) === parseInt(numLote)){
+                                if (parseInt(layer.options.numQuadra) === parseInt(numQuadra)) {
+                                    layer.setStyle({
+                                        color: corFundo,
+                                        fillStroke: corBorda,
+                                    });
+                                }                                       
+                            }
+                        }
+                    });
+                }
+
+        layers.addTo(map_#{cc.attrs.id});
+                
+                function captureImage(callback){
+                    let oldMaxZoom = map_#{cc.attrs.id}.getMaxZoom();
+                    map_#{cc.attrs.id}.setMaxZoom(28);
+                    leafletImage(map_#{cc.attrs.id}, function(err, canvas) {
+                        let base64Image = canvas.toDataURL("image/png", "1.0");
+                        const output = base64Image.replace(/^data:image\/(png|jpg);base64,/, "");
+                        document.getElementById("mapPrint").src = base64Image;
+                        callback(output);
+                        map_#{cc.attrs.id}.setMaxZoom(oldMaxZoom);
+                        
+                    });
+                }
+                
+                function centerToNucleoLayer(zoom){
+                    let center = null;
+                    map_#{cc.attrs.id}.eachLayer(function(layer){
+                        if (layer.options.label === 'Nucleo'){
+                            center = layer.getBounds();
+                        }
+                        if (layer.options.label === 'Quadra'){
+                            center = layer.getBounds();
+                        }
+                    });
+                    if (center !== null){
+                        map_#{cc.attrs.id}.setZoom(0);
+                        map_#{cc.attrs.id}.setView(center.getCenter(), zoom, {
+                            animate: false
+                        });
+                    }
+                }
+                
+                function centerToImovelLayer(numLote, zoom){
+                    let centerBounds = null;
+                    map_#{cc.attrs.id}.eachLayer(function(layer){
+                        if (layer.options.label === 'Lote'){
+                            if(parseInt(layer.options.numLote) === parseInt(numLote)){
+                                centerBounds = layer.getBounds();
+                            }
+                        }
+                    });
+                    if (centerBounds !== null){
+                        map_#{cc.attrs.id}.setZoom(0);
+                        map_#{cc.attrs.id}.setView(centerBounds.getCenter(), zoom, {
+                            animate: false
+                        });
+                    } else {
+                        return false;
+                    }
+                    
+                    return true;
+                }
+                
+                function updatePopup(popupId, content){
+                    let element = popupList[popupId];
+                    if (element !== null){
+                        if(element !== undefined){
+                            element.setContent(content);
+                        }
+                    }
+                }
+              
+               var observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.intersectionRatio > 0){
+                        map_#{cc.attrs.id}.invalidateSize();
+                    }
+                    });
+                });
+
+              observer.observe(#{cc.attrs.id});
+    </script>
+    
+</composite:implementation>
+
+</html>

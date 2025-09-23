@@ -1,0 +1,51 @@
+.ql-align-left {
+    text-align: left;
+}
+.coordenadas {
+    display: flex !important;
+    flex-direction: row !important;
+}
+.ql-align-center {
+    text-align: center;
+}
+.padding-top{
+    padding-top: 10px !important;
+}
+.fundoCinza{
+    background: grey !important;
+    width: 650px !important;
+}
+
+.ql-align-right {
+    text-align: right;
+
+}
+.mapa{
+    max-width: 500px;
+    max-height: 500px;
+    width: 400px !important;
+    height: 400px !important;
+}
+.paragrafo{
+    font-size: 14px;
+}
+.ql-align-justify {
+    text-align: justify;
+}
+.ql-size-large{
+    font-size: 20px;
+    font-weight: normal  !important;
+}
+.ql-size-huge{
+    font-size: 25px;
+    font-weight: normal !important;
+}
+.bola{
+    background-image: url("/resources/x.png");
+    width: 30px;
+}
+p{
+    margin: 5px !important;
+    padding: 5px !important;
+
+}

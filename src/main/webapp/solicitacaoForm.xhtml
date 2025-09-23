@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fox="http://xmlns.jcp.org/jsf/composite/fox">
+
+    <p:growl id="messages" />
+    <h:panelGroup id="solicitacaoPanelGroup">
+
+        <div class="row mb-4">
+
+            <h:panelGroup rendered="#{managerSolicitacao.view}">
+                <div class="d-flex justify-content-between">
+                    <h5>N° Protocolo: #{managerSolicitacao.solicitacao.numeroProtocolo}</h5>  
+                    <div style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white" >#{managerSolicitacao.solicitacao.statusSolicitacao.nome}</div>
+                </div>
+            </h:panelGroup>
+
+            <div class="form-group col-md-6 mb-3">
+                <p:outputLabel value="Número do Poste (se visível)" />
+                <p:inputText styleClass="form-control" 
+                             id="numeroPoste"
+                             disabled="#{managerSolicitacao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerSolicitacao.solicitacao.numeroPoste}" />
+            </div>
+
+            <div class="form-group mb-3 col-md-6">
+                <p:outputLabel value="Tipo do Problema" />
+                <p:selectOneMenu id="tipoProblema"
+                                 disabled="#{managerSolicitacao.view}"
+                                 required="true"
+                                 requiredMessage="Este campo é obrigatório"
+                                 styleClass="form-control"
+                                 placeholder="Selecione o problema"
+                                 value="#{managerSolicitacao.solicitacao.tipoProblema}">
+                    <f:selectItem noSelectionOption="true" />
+                    <f:selectItems value="#{managerEnums.tipoProblema}" var="t" itemLabel="#{t.label}" itemValue="#{t}" />
+                </p:selectOneMenu>
+            </div>
+
+            <div class="form-group mb-4 col-md-12">
+                <p:outputLabel value="Descrição do Problema" />
+                <p:inputTextarea id="descricaoProblema"
+                                 rows="4"
+                                 disabled="#{managerSolicitacao.view}"
+                                 styleClass="form-control"
+                                 placeholder="Descreva o problema"
+                                 value="#{managerSolicitacao.solicitacao.descricao}"/>
+            </div>
+
+        </div>
+
+    </h:panelGroup>
+
+    <h:panelGroup rendered="#{!managerSolicitacao.create}">
+        <p:dataTable id="solicitacaoTable" 
+                     var="s" 
+                     paginator="true"
+                     rows="10"
+                     paginatorPosition="bottom"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                     rowsPerPageTemplate="5, 10, 20"
+                     emptyMessage="Nenhum registro encontrado."
+                     styleClass="my-md-3" value="#{managerSolicitacao.solicitacao.listHistorico}">
+            <f:facet name="header">
+                <div class="flex justify-content-between align-items-center" style="text-align: center">
+                    Histórico (#{managerSolicitacao.solicitacao.listHistorico.size()})
+                </div>
+            </f:facet>
+
+            <p:column headerText="Descrição">
+                <h:outputText value="#{s.descricao}" />
+            </p:column>
+
+            <p:column headerText="Data">
+                <h:outputText value="#{managerSolicitacao.dataFormatada(s.creationDate)}" />
+            </p:column>
+
+            <p:column headerText="Satus">
+                <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white"
+                               value="#{s.statusSolicitacao.nome}" />
+            </p:column>
+        </p:dataTable>
+    </h:panelGroup>
+
+
+
+    <center>
+        <p:commandButton value="Enviar Solicitação"
+                         rendered="#{!managerSolicitacao.view}" 
+                         actionListener="#{managerSolicitacao.salvar()}" 
+                         update="@form" 
+                         process="@this solicitacaoForm:solicitacaoPanelGroup" />
+    </center>
+
+</ui:composition>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="layout.xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="titulo">
+    </ui:define> 
+    <ui:define name="subTitulo">
+        <i class="#{managerCidadao.icon} m-md-1"></i> #{managerCidadao.title} Gestor
+    </ui:define>
+
+    <ui:define name="Ações">
+        <p:button icon="pi pi-search" value="Pesquisar" href="pesquisarNucleo.xhtml"/>
+        <p:splitButton value="Ações" rendered="#{!managerNucleo.create}"
+                       icon="pi pi-cog" >
+
+            <p:menuitem value="Editar"
+                        onclick="window.location.href = 'cidadao.xhtml?edit=#{managerNucleo}'"
+                        icon="pi pi-pencil"
+                        process="@this"/>
+
+<!--            <p:menuitem value="Excluir"
+                        icon="pi pi-trash"
+                        onclick="PF('removerPacienteViewConfirmDialog').show();"
+                        process="@this"/>-->
+
+        </p:splitButton>
+    </ui:define>
+
+    <ui:define name="corpo">
+
+        <h:form id="gestorForm">
+
+            <ui:include src="gestorForm.xhtml"/>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>

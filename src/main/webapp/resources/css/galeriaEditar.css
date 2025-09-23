@@ -1,0 +1,116 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 15/10/2021, 16:33:14
+    Author     : foxpc3
+*/
+.galeriaEditar {
+    display: none;
+}
+
+.galeriaEditar.is-visible {
+    background-color: #000;
+    left: 0;
+    top : 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    opacity: 1;
+    overflow: hidden;
+    display: flex;
+}
+
+.galeriaEditar--rotate--left {
+    background: url('../resources/images/rotate-left.svg');
+}
+
+.galeriaEditar--rotate--right {
+    background: url('../resources/images/rotate-right.svg');
+}
+
+.galeriaEditar--rotate--save {
+    background: url('../resources/images/save.svg');
+    width: 44px;
+    background-repeat: no-repeat;
+    height: 44px;
+    background-size: 50%;
+    background-position: 50%;
+}
+
+.galeriaEditar--rotate--left, .galeriaEditar--rotate--right {
+    background-size: 70%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+button.galeriaEditar--rotate--left:hover, button.galeriaEditar--rotate--right:hover {
+    border: 1px dashed #666;
+}
+
+button.galeriaEditar--rotate--left:focus, button.galeriaEditar--rotate--right:focus {
+    background-color: #111;
+}
+
+@keyframes slidein {
+    0% {
+        background-color: transparent;
+    }
+
+    50% {
+        background-color: #ccc;
+    }
+
+    100% {
+        background-color: transparent;
+    }
+}
+
+.galeriaEditar-item {
+    display: flex;
+    flex-grow: 0;
+}
+
+.galeriaEditar-item.has-controls {
+    justify-content: center;
+}
+
+.galeriaEditar-item.flex-grow-1{
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.galeriaEditar-zoomwrap {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.galeriaEditar-zoomwrap canvas {
+    height: 100%;
+    flex-grow: 0;
+    overflow-y: hidden;
+}
+.galeriaEditar-zoomwrap img {
+    display: none;
+}
+
+
+
+.galeriaEditar-controls {
+    align-self: flex-end;
+    display: block;
+    margin: 0 auto;
+    padding: 1rem;
+}
