@@ -51,7 +51,7 @@ public class Solicitacao extends GenericEntity {
     private String numeroProtocolo;
     
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Historico> listHistorico;
+    private List<Historico> historicos;
     
     @OneToOne
     private Cidadao cidadao;

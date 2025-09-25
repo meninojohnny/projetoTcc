@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:fox="http://xmlns.jcp.org/jsf/composite/fox">
+
+    <p:growl id="messages" />
+    <h:panelGroup id="cidadaoPanelGroup">
+
+        <div class="row mb-4">
+
+            <h3 id="titulo-filtro">
+                <i class="bi bi-person-fill"></i> Dados Pessoais
+            </h3>
+            <hr class="mb-4 my-3"/>
+
+            <div class="form-group col-md-4 mb-4">
+                <p:outputLabel value="Nome" />
+                <p:inputText styleClass="form-control" 
+                             id="nome"
+                             required="true"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.nome}" />
+            </div>
+
+            <div class="form-group col-md-4 mb-4">
+                <p:outputLabel value="CPF" />
+                <p:inputMask styleClass="form-control"
+                             id="cpf"
+                             disabled="#{managerCidadao.view}"
+                             required="true"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.cpf}" 
+                             mask="999.999.999-99"
+                             converter="cpfConverter"
+                             validateMask="true" />
+            </div>
+
+            <div class="form-group mb-4 col-md-4">
+                <p:outputLabel value="Data Nascimento" />
+                <p:calendar id="dataNascimento"
+                            value="#{managerCidadao.cidadao.dataNascimento}"
+                            inputStyleClass="form-control"
+                            mask="true" locale="pt"
+                            required="true"
+                            disabled="#{managerCidadao.view}"
+                            showOn="button" pattern="dd/MM/yyyy"
+                            style="display: flex;" requiredMessage="Este campo é obrigatório." />
+            </div>
+
+            <h:panelGroup rendered="#{managerCidadao.create}">
+                <div class="d-flex flex-column form-group col-md-6 mb-4">
+                    <p:outputLabel value="Senha" />
+                    <p:password
+                        styleClass="form-control" 
+                        style="width: 100%"
+                        id="senha" 
+                        value="#{managerCidadao.usuario.senha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
+
+<!--                    <p:inputText styleClass="form-control" 
+                                 id="senha"
+                                 required="true"
+                                 placeholder="************"
+                                 disabled="#{managerCidadao.view}"
+                                 requiredMessage="Este campo é obrigatorio"
+                                 value="#{managerCidadao.cidadao.nome}" />-->
+                </div>
+
+                <div class="d-flex flex-column form-group col-md-6 mb-4">
+                    <p:outputLabel value="Repetir Senha" />
+
+                    <p:password
+                        styleClass="form-control" 
+                        id="repetirSenha" 
+                        value="#{managerCidadao.repetirSenha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
+
+<!--                    <p:inputText styleClass="form-control" 
+                                 id="repetirSenha"
+                                 required="true"
+                                 placeholder="************"
+                                 disabled="#{managerCidadao.view}"
+                                 requiredMessage="Este campo é obrigatorio"
+                                 value="#{managerCidadao.cidadao.nome}" />-->
+                </div>
+            </h:panelGroup>
+
+            <h3 id="titulo-filtro">
+                <i class="bi bi-telephone-fill"></i> Contato
+            </h3>
+            <hr class="mb-3 my-3"/>
+
+            <div class="form-group mb-4 col-md-6">
+                <p:outputLabel value="Telefone" />
+                <p:inputMask styleClass="form-control"
+                             id="telefone"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.telefone}" 
+                             mask="(99) 99999-9999" 
+                             validateMask="true" />
+            </div>
+
+            <div class="form-group mb-4 col-md-6">
+                <p:outputLabel value="Email" />
+                <p:inputText styleClass="form-control"
+                             id="email"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.email}" />
+            </div>
+
+            <h3 id="titulo-filtro">
+                <i class="bi bi-geo-alt-fill"></i> Endereço
+            </h3>
+            <hr class="mb-3 my-3"/>
+
+            <div class="form-group col-md-4">
+
+                <p:outputLabel value="Cep" />
+                <div class="d-flex">
+                    <p:inputMask id="cep" 
+                                 styleClass="form-control"
+                                 value="#{managerCidadao.cidadao.endereco.cep}" 
+                                 mask="99.999-999" 
+                                 placeholder="Digite o CEP"
+                                 validateMask="true"/>
+
+                    <p:commandButton icon="pi pi-search"
+                                     title="Pesquisar CEP"
+                                     process="@this"
+                                     update="@this"
+                                     actionListener="#{managerCidadao.pesquisarCepAPI()}"
+                                     disabled="#{managerCidadao.view}"
+                                     style="border-radius: 0px 8px 8px 0px;"/>
+                </div>
+
+            </div>
+
+            <div class="form-group col-md-4 mb-4">
+                <p:outputLabel value="Rua" />
+                <p:inputText styleClass="form-control" 
+                             id="logradouro"
+                             required="true"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.endereco.logradouro}" />
+            </div>
+
+            <div class="form-group col-md-4 mb-4">
+                <p:outputLabel value="Número" />
+                <p:inputText styleClass="form-control" 
+                             id="numero"
+                             required="true"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.endereco.numero}" />
+            </div>
+
+            <div class="form-group col-md-6 mb-4">
+                <p:outputLabel value="Bairro" />
+                <p:inputText styleClass="form-control" 
+                             id="bairro"
+                             required="true"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.endereco.bairro.nome}" />
+            </div>
+
+
+
+            <div class="form-group col-md-6 mb-4">
+                <p:outputLabel value="Complemento" />
+                <p:inputText styleClass="form-control" 
+                             id="complemento"
+                             disabled="#{managerCidadao.view}"
+                             requiredMessage="Este campo é obrigatorio"
+                             value="#{managerCidadao.cidadao.endereco.complemento}" />
+            </div>
+
+        </div>
+
+        <h:panelGroup rendered="#{managerCidadao.view}">
+            <h3 id="titulo-filtro">
+                Solicitação
+            </h3>
+            <hr class="mb-3 my-3"/>
+
+            <h:panelGroup id="tablePanelGroup">
+                <p:dataTable id="solicitacaoTable" 
+                             var="s" 
+                             paginator="true"
+                             rows="10"
+                             paginatorPosition="bottom"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="5, 10, 20"
+                             emptyMessage="Nenhum registro encontrado."
+                             styleClass="my-md-3" value="#{managerCidadao.listSolicitacao}">
+                    <f:facet name="header">
+                        <div class="flex justify-content-between align-items-center" style="text-align: center">
+                            Solicitações (#{managerCidadao.listSolicitacao.size()})
+                        </div>
+                    </f:facet>
+                    <p:column  headerText="Ações" >
+                        <p:button icon="pi pi-eye"
+                                  class="ui-button-visualizar"
+                                  title="Visualizar Solicitacao"
+                                  href="solicitacao.xhtml?view=#{s.id}"/>
+                        <!--                        <p:commandButton icon="pi pi-trash"
+                                                                 title="Remover Nucleo"
+                                                                 process="@this"
+                                                                 class="ui-button-visualizar"
+                                                                 update="nucleoForm:removerNucleoConfirmDialog"
+                                                                 oncomplete="PF('removerNucleoConfirmDialog').show();"
+                                                                 >
+                                                    <f:setPropertyActionListener value="{nucleo}"
+                                                                                 target="{managerNucleo.nucleo}"/>
+                                                </p:commandButton>-->
+                    </p:column>
+
+                    <p:column headerText="N° Protocolo">
+                        <h:outputText value="#{s.numeroProtocolo}" />
+                    </p:column>
+
+                    <p:column headerText="N° Poste">
+                        <h:outputText value="#{s.numeroPoste}" />
+                    </p:column>
+
+                    <p:column headerText="Data">
+                        <h:outputText value="#{managerSolicitacao.dataFormatada(s.creationDate)}" />
+                    </p:column>
+
+                    <p:column headerText="Satus">
+                        <p:outputLabel style="text-align: center; font-weight: bold; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white"
+                                       value="#{s.statusSolicitacao.nome}" />
+                    </p:column>
+
+                </p:dataTable>
+            </h:panelGroup>
+        </h:panelGroup>
+
+    </h:panelGroup>
+
+    <center>
+        <p:commandButton value="Salvar" 
+                         icon="#{managerCidadao.create ? 'pi pi-save' : 'pi pi-sync' }" 
+                         rendered="#{!managerCidadao.view}" 
+                         actionListener="#{managerCidadao.salvar()}" 
+                         update="@form" 
+                         process="@this perfilCidadaoForm:cidadaoPanelGroup" />
+
+        <p:commandButton value="Cancelar"
+                         icon="pi pi-ban"
+                         rendered="#{managerCidadao.edit}" 
+                         onclick="window.location.href = 'cidadao.xhtml?view= #{managerCidadao.cidadao.id}'"/>
+    </center>
+
+</ui:composition>

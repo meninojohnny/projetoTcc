@@ -11,16 +11,16 @@
     <ui:define name="titulo">
     </ui:define> 
     <ui:define name="subTitulo">
-        <i class="#{managerCidadao.icon} m-md-1"></i> #{managerCidadao.title} Gestor
+        <i class="#{managerGestor.icon} m-md-1"></i> #{managerGestor.title} Gestor
     </ui:define>
 
     <ui:define name="Ações">
         <p:button icon="pi pi-search" value="Pesquisar" href="pesquisarNucleo.xhtml"/>
-        <p:splitButton value="Ações" rendered="#{!managerNucleo.create}"
+        <p:splitButton value="Ações" rendered="#{!managerGestor.create}"
                        icon="pi pi-cog" >
 
             <p:menuitem value="Editar"
-                        onclick="window.location.href = 'cidadao.xhtml?edit=#{managerNucleo}'"
+                        onclick="window.location.href = 'cidadao.xhtml?edit=#{managerGestor}'"
                         icon="pi pi-pencil"
                         process="@this"/>
 

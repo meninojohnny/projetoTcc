@@ -35,7 +35,8 @@
                              required="true"
                              requiredMessage="Este campo é obrigatorio"
                              value="#{managerCidadao.cidadao.cpf}" 
-                             mask="999.999.999-99" 
+                             mask="999.999.999-99"
+                             converter="cpfConverter"
                              validateMask="true" />
             </div>
 
@@ -52,42 +53,42 @@
             </div>
 
             <h:panelGroup rendered="#{managerCidadao.create}">
-                <div class="form-group col-md-6 mb-4">
+                <div class="d-flex flex-column form-group col-md-6 mb-4">
                     <p:outputLabel value="Senha" />
-                    <!--                                    <p:password
-                                                            styleClass="form-control" 
-                                                            style="width: 100%"
-                                                            id="senha" 
-                                                            value="#{managerCidadao.cidadao.nome}" 
-                                                            toggleMask="true" 
-                                                            redisplay="true"/>-->
+                    <p:password
+                        styleClass="form-control" 
+                        style="width: 100%"
+                        id="senha" 
+                        value="#{managerCidadao.usuario.senha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
 
-                    <p:inputText styleClass="form-control" 
+<!--                    <p:inputText styleClass="form-control" 
                                  id="senha"
                                  required="true"
                                  placeholder="************"
                                  disabled="#{managerCidadao.view}"
                                  requiredMessage="Este campo é obrigatorio"
-                                 value="#{managerCidadao.cidadao.nome}" />
+                                 value="#{managerCidadao.cidadao.nome}" />-->
                 </div>
 
-                <div class="form-group col-md-6 mb-4">
+                <div class="d-flex flex-column form-group col-md-6 mb-4">
                     <p:outputLabel value="Repetir Senha" />
 
-                    <!--                                    <p:password
-                                                            styleClass="form-control" 
-                                                            id="repetirSenha" 
-                                                            value="#{managerCidadao.cidadao.nome}" 
-                                                            toggleMask="true" 
-                                                            redisplay="true"/>-->
+                    <p:password
+                        styleClass="form-control" 
+                        id="repetirSenha" 
+                        value="#{managerCidadao.repetirSenha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
 
-                    <p:inputText styleClass="form-control" 
+<!--                    <p:inputText styleClass="form-control" 
                                  id="repetirSenha"
                                  required="true"
                                  placeholder="************"
                                  disabled="#{managerCidadao.view}"
                                  requiredMessage="Este campo é obrigatorio"
-                                 value="#{managerCidadao.cidadao.nome}" />
+                                 value="#{managerCidadao.cidadao.nome}" />-->
                 </div>
             </h:panelGroup>
 
@@ -128,7 +129,8 @@
                     <p:inputMask id="cep" 
                                  styleClass="form-control"
                                  value="#{managerCidadao.cidadao.endereco.cep}" 
-                                 mask="99.999-999" 
+                                 mask="99.999-999"
+                                 disabled="#{managerCidadao.view}"
                                  placeholder="Digite o CEP"
                                  validateMask="true"/>
 
@@ -137,7 +139,7 @@
                                      process="@this"
                                      update="@this"
                                      actionListener="#{managerCidadao.pesquisarCepAPI()}"
-                                     disabled="#{managerCidadao.view}"
+                                     disabled="#true"
                                      style="border-radius: 0px 8px 8px 0px;"/>
                 </div>
 
@@ -238,7 +240,7 @@
                     </p:column>
 
                     <p:column headerText="Satus">
-                        <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white"
+                        <p:outputLabel style="text-align: center; font-weight: bold; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #ffb700; color: white"
                                        value="#{s.statusSolicitacao.nome}" />
                     </p:column>
 

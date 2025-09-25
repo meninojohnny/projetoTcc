@@ -8,7 +8,7 @@
                 xmlns:fox="http://xmlns.jcp.org/jsf/composite/fox">
 
     <p:growl id="messages" />
-    <h:panelGroup id="cidadaoPanelGroup">
+    <h:panelGroup id="gestorPanelGroup">
 
         <div class="row mb-4">
 
@@ -17,83 +17,71 @@
             </h3>
             <hr class="mb-4 my-3"/>
 
-            <div class="form-group col-md-4 mb-4">
+            <div class="form-group col-md-#{managerGestor.create ? '4' : '6'} mb-4">
                 <p:outputLabel value="Nome" />
                 <p:inputText styleClass="form-control" 
                              id="nome"
                              required="true"
-                             disabled="#{managerCidadao.view}"
+                             disabled="#{managerGestor.view}"
                              requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.nome}" />
+                             value="#{managerGestor.gestor.nome}" />
             </div>
 
-            <div class="form-group mb-4 col-md-4">
+            <div class="form-group mb-4 col-md-#{managerGestor.create ? '4' : '6'}">
                 <p:outputLabel value="Email" />
                 <p:inputText styleClass="form-control"
                              id="email"
-                             disabled="#{managerCidadao.view}"
+                             disabled="#{managerGestor.view}"
                              requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.email}" />
+                             value="#{managerGestor.gestor.email}" />
             </div>
 
-            <div class="form-group mb-4 col-md-4">
+            <div class="form-group mb-4 col-md-#{managerGestor.create ? '4' : '6'}">
                 <p:outputLabel value="Telefone" />
                 <p:inputMask styleClass="form-control"
                              id="telefone"
-                             disabled="#{managerCidadao.view}"
+                             disabled="#{managerGestor.view}"
                              requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.telefone}" 
+                             value="#{managerGestor.gestor.telefone}" 
                              mask="(99) 99999-9999" 
                              validateMask="true" />
             </div>
 
 
 
-            <div class="form-group mb-4 col-md-4">
+            <div class="form-group mb-4 col-md-#{managerGestor.create ? '4' : '6'}">
                 <p:outputLabel value="Login" />
                 <p:inputText styleClass="form-control"
                              id="login"
-                             disabled="#{managerCidadao.view}"
+                             disabled="#{managerGestor.view}"
                              requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.email}" />
+                             value="#{managerGestor.gestor.login}" />
             </div>
 
-            <div class="form-group col-md-4 mb-4">
-                <p:outputLabel value="Senha" />
-                <!--                    <p:password
-                                        styleClass="form-control" 
-                                        style="width: 100%"
-                                        id="senha" 
-                                        value="#{managerCidadao.cidadao.nome}" 
-                                        toggleMask="true" 
-                                        redisplay="true"/>-->
+            <h:panelGroup rendered="#{managerGestor.create}">
+                <div class="d-flex flex-column form-group col-md-4 mb-4">
+                    <p:outputLabel value="Senha" />
+                    <p:password
+                        styleClass="form-control" 
+                        style="width: 100%"
+                        id="senha" 
+                        value="#{managerGestor.gestor.senha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
+                </div>
 
-                <p:inputText styleClass="form-control" 
-                             id="senha"
-                             required="true"
-                             placeholder="************"
-                             disabled="#{managerCidadao.view}"
-                             requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.nome}" />
-            </div>
+                <div class="d-flex flex-column form-group col-md-4 mb-4">
+                    <p:outputLabel value="Repetir Senha" />
+                    <p:password
+                        styleClass="form-control" 
+                        id="repetirSenha" 
+                        value="#{managerGestor.repetirSenha}" 
+                        toggleMask="true" 
+                        redisplay="true"/>
+                </div>
+            </h:panelGroup>
 
-            <div class="form-group col-md-4 mb-4">
-                <p:outputLabel value="Repetir Senha" />
-                <!--                    <p:password
-                                        styleClass="form-control" 
-                                        id="repetirSenha" 
-                                        value="#{managerCidadao.cidadao.nome}" 
-                                        toggleMask="true" 
-                                        redisplay="true"/>-->
 
-                <p:inputText styleClass="form-control" 
-                             id="repetirSenha"
-                             required="true"
-                             placeholder="************"
-                             disabled="#{managerCidadao.view}"
-                             requiredMessage="Este campo é obrigatorio"
-                             value="#{managerCidadao.cidadao.nome}" />
-            </div>
 
         </div>
 
@@ -101,16 +89,16 @@
 
     <center>
         <p:commandButton value="Salvar" 
-                         icon="#{managerCidadao.create ? 'pi pi-save' : 'pi pi-sync' }" 
-                         rendered="#{!managerCidadao.view}" 
-                         actionListener="#{managerCidadao.salvar()}" 
+                         icon="#{managerGestor.create ? 'pi pi-save' : 'pi pi-sync' }" 
+                         rendered="#{!managerGestor.view}" 
+                         actionListener="#{managerGestor.salvar()}" 
                          update="@form" 
-                         process="@this gestorForm:cidadaoPanelGroup" />
+                         process="@this gestorForm:gestorPanelGroup" />
 
         <p:commandButton value="Cancelar"
                          icon="pi pi-ban"
-                         rendered="#{managerCidadao.edit}" 
-                         onclick="window.location.href = 'cidadao.xhtml?view= #{managerCidadao.cidadao.id}'"/>
+                         rendered="#{managerGestor.edit}" 
+                         onclick="window.location.href = 'gestor.xhtml?view= #{managerGestor.gestor.id}'"/>
     </center>
 
 </ui:composition>

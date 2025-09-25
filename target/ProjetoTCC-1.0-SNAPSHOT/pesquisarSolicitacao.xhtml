@@ -25,7 +25,7 @@
             <h:panelGroup id="pesquisarSolicitacaoPanelGroup">
                 <div class="row">
 
-                    <div class="col-md-3 mb-3">
+                    <div class="mb-3 col-md-#{managerSolicitacao.renderedUserGestorAdm() ? '3' : '6'}">
                         <div class="form-group">
                             <p:outputLabel value="N° Protocolo" />
                             <p:inputText id="numeroProtocolo"
@@ -34,27 +34,31 @@
                         </div>
                     </div>
 
-                    <div class="col-md-3 mb-3">
-                        <div class="form-group">
-                            <p:outputLabel value="Nome Cidadão" />
-                            <p:inputText id="nome"
-                                         value="#{managerSolicitacao.solicitacao.numeroProtocolo}" 
-                                         styleClass="form-control" />
+                    <h:panelGroup rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
+                        <div class="col-md-3 mb-3">
+                            <div class="form-group">
+                                <p:outputLabel value="Nome Cidadão" />
+                                <p:inputText id="nome"
+                                             value="#{managerSolicitacao.solicitacao.numeroProtocolo}" 
+                                             styleClass="form-control" />
+                            </div>
                         </div>
-                    </div>
+                    </h:panelGroup>
 
-                    <div class="form-group col-md-3 mb-4">
-                        <p:outputLabel value="CPF Cidadão" />
-                        <p:inputMask styleClass="form-control"
-                                     id="cpf"
-                                     disabled="#{managerCidadao.view}"
-                                     requiredMessage="Este campo é obrigatorio"
-                                     value="#{managerCidadao.cidadao.cpf}" 
-                                     mask="999.999.999-99" 
-                                     validateMask="true" />
-                    </div>
+                    <h:panelGroup rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
+                        <div class="form-group mb-4 col-md-3">
+                            <p:outputLabel value="CPF Cidadão" />
+                            <p:inputMask styleClass="form-control"
+                                         id="cpf"
+                                         disabled="#{managerCidadao.view}"
+                                         requiredMessage="Este campo é obrigatorio"
+                                         value="#{managerCidadao.cidadao.cpf}" 
+                                         mask="999.999.999-99" 
+                                         validateMask="true" />
+                        </div> 
+                    </h:panelGroup>
 
-                    <div class="form-group mb-3 col-md-3">
+                    <div class="form-group mb-3 col-md-#{managerSolicitacao.renderedUserGestorAdm() ? '3' : '6'}">
                         <p:outputLabel value="Tipo de Problema" />
                         <p:selectOneMenu id="tipoProblema"
                                          disabled="#{managerSolicitacao.view}"
@@ -106,10 +110,12 @@
                                                                                  target="{managerNucleo.nucleo}"/>
                                                 </p:commandButton>-->
                     </p:column>
-                    
-                    <p:column headerText="Cidadão">
-                        <h:outputText value="José Ferreira Carneiro" />
-                    </p:column>
+
+                    <h:panelGroup rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
+                        <p:column headerText="Cidadão">
+                            <h:outputText value="#{s.cidadao.nome}" />
+                        </p:column>
+                    </h:panelGroup>
 
                     <p:column headerText="N° Protocolo">
                         <h:outputText value="#{s.numeroProtocolo}" />
@@ -124,7 +130,7 @@
                     </p:column>
 
                     <p:column headerText="Satus">
-                        <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(s.statusSolicitacao)}; color: white"
+                        <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(s.statusSolicitacao)}; color: white; font-weight: bold"
                                        value="#{s.statusSolicitacao.nome}" />
                     </p:column>
 

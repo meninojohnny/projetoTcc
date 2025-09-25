@@ -1,6 +1,5 @@
 package com.br.ProjetoTcc.pessoa;
 
-
 import com.br.GeoRegulariza.Generic.GenericEntity;
 import com.br.ProjetoTcc.endereco.Endereco;
 import jakarta.persistence.CascadeType;

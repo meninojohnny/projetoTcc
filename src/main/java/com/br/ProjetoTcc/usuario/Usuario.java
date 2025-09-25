@@ -5,13 +5,16 @@
 package com.br.ProjetoTcc.usuario;
 
 import com.br.ProjetoTcc.cidadao.Cidadao;
+import com.br.ProjetoTcc.grupo.Grupo;
 import com.br.ProjetoTcc.pessoa.Pessoa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,6 +42,9 @@ public class Usuario extends Pessoa {
     @OneToOne
     private Cidadao cidadao;
     
-    private boolean isCidadao;
+    private Boolean isCidadao;
+    
+    @OneToMany
+    private List<Grupo> grupos;
     
 }

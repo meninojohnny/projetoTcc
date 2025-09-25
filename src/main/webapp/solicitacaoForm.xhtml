@@ -15,7 +15,7 @@
             <h:panelGroup rendered="#{managerSolicitacao.view}">
                 <div class="d-flex justify-content-between">
                     <h5>N° Protocolo: #{managerSolicitacao.solicitacao.numeroProtocolo}</h5>  
-                    <div style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(managerSolicitacao.solicitacao.statusSolicitacao)}; color: white" >#{managerSolicitacao.solicitacao.statusSolicitacao.nome}</div>
+                    <div style="text-align: center; font-weight: bold; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(managerSolicitacao.solicitacao.statusSolicitacao)}; color: white" >#{managerSolicitacao.solicitacao.statusSolicitacao.nome}</div>
                 </div>
             </h:panelGroup>
 
@@ -66,10 +66,10 @@
                      currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
                      rowsPerPageTemplate="5, 10, 20"
                      emptyMessage="Nenhum registro encontrado."
-                     styleClass="my-md-3" value="#{managerSolicitacao.solicitacao.listHistorico}">
+                     styleClass="my-md-3" value="#{managerSolicitacao.solicitacao.historicos}">
             <f:facet name="header">
                 <div class="flex justify-content-between align-items-center" style="text-align: center">
-                    Histórico (#{managerSolicitacao.solicitacao.listHistorico.size()})
+                    Histórico (#{managerSolicitacao.solicitacao.historicos.size()})
                 </div>
             </f:facet>
 
@@ -82,7 +82,7 @@
             </p:column>
 
             <p:column headerText="Satus">
-                <p:outputLabel style="text-align: center; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(s.statusSolicitacao)}; color: white"
+                <p:outputLabel style="text-align: center; font-weight: bold; border-radius: 5px; padding: 5px 0px; width: 100px; background-color: #{managerSolicitacao.backgroundStatus(s.statusSolicitacao)}; color: white"
                                value="#{s.statusSolicitacao.nome}" />
             </p:column>
         </p:dataTable>

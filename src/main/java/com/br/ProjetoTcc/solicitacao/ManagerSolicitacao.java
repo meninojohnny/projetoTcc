@@ -11,7 +11,11 @@ import com.br.GeoRegulariza.utilitarie.DateUtil;
 import com.br.GeoRegulariza.utilitarie.Msg;
 import com.br.GeoRegulariza.utilitarie.Utils;
 import com.br.ProjetoTcc.Historico;
+import com.br.ProjetoTcc.cidadao.Cidadao;
+import com.br.ProjetoTcc.grupo.Grupo;
 import com.br.ProjetoTcc.historico.HistoricoServico;
+import com.br.ProjetoTcc.usuario.Usuario;
+import com.br.ProjetoTcc.usuario.UsuarioServico;
 import jakarta.ejb.EJB;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Named;
@@ -39,26 +43,37 @@ public class ManagerSolicitacao extends GenericManager {
     @EJB
     private HistoricoServico historicoServico;
     
+    @EJB
+    private UsuarioServico usuarioServico;
+    
     private Solicitacao solicitacao;
     
     private List<Solicitacao> listSolicitacao;
     
     private List<Historico> listHistorico;
+    
+    private Usuario usuarioLogado;
 
     @Override
     public void load(String param) {
+        instanciarUsuario();
         this.solicitacao = this.solicitacaoServico.find(Long.valueOf(param));
     }
 
     @Override
     public void instantiate() {
+        instanciarUsuario();
         instanciarSolicitacao();
     }
     
     public void instanciarSolicitacao() {
         this.solicitacao = new Solicitacao();
-        this.solicitacao.setListHistorico(new ArrayList());
+        this.solicitacao.setHistoricos(new ArrayList());
         this.listSolicitacao = new ArrayList<>();
+    }
+    
+    public void instanciarUsuario() {
+        this.usuarioLogado = this.usuarioServico.getCurrentUser();
     }
 
     @Override
@@ -82,7 +97,8 @@ public class ManagerSolicitacao extends GenericManager {
             
             this.solicitacao.setNumeroProtocolo(gerarNumeroProtocolo());
             this.solicitacao.setStatusSolicitacao(StatusSolicitacao.PENDENTE);
-            this.solicitacao.getListHistorico().add(historico);
+            this.solicitacao.getHistoricos().add(historico);
+            this.solicitacao.setCidadao(this.usuarioLogado.getCidadao());
             
             this.solicitacaoServico.save(solicitacao);
         }
@@ -104,7 +120,6 @@ public class ManagerSolicitacao extends GenericManager {
     }
     
     public String backgroundStatus(StatusSolicitacao status) {
-        
         switch (status) {
             case PENDENTE:
                 return "#ffb700";
@@ -117,5 +132,16 @@ public class ManagerSolicitacao extends GenericManager {
         }
         return "";
     }
+    
+    public boolean renderedUserGestorAdm() {
+        for (Grupo g : this.usuarioLogado.getGrupos()) {
+            if (g.getNome().equals("gestor") || g.getNome().equals("administrador")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
     
 }

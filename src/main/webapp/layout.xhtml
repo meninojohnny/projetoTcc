@@ -231,23 +231,37 @@
                                 <div data-i18n="Analytics">Inicio</div>
                             </a>
                         </li>
+
+                        <h:panelGroup rendered="#{managerLayout.renderedUserGestor()}">
+                            <li class="menu-header small text-uppercase">
+                                <span class="menu-header-text">Cidadão</span>
+                            </li>
+                            <li class="menu-item" id="itemNovaConsulta">
+                                <a href="cidadao.xhtml" class="menu-link">
+                                    <i class="menu-icon tf-icons pi pi-plus-circle"></i>
+                                    <div data-i18n="Without navbar">Novo Cadastro</div>
+                                </a>
+                            </li>
+                            <li class="menu-item" id="itemRegistros">
+                                <a href="pesquisarCidadao.xhtml" class="menu-link">
+                                    <i class="menu-icon tf-icons bi bi-search"></i>
+                                    <div data-i18n="Without navbar">Pesquisar</div>
+                                </a>
+                            </li>
+                        </h:panelGroup>
                         
-                        <li class="menu-header small text-uppercase">
-                            <span class="menu-header-text">Cidadão</span>
-                        </li>
-                        <li class="menu-item" id="itemNovaConsulta">
-                            <a href="cidadao.xhtml" class="menu-link">
-                                <i class="menu-icon tf-icons pi pi-plus-circle"></i>
-                                <div data-i18n="Without navbar">Novo Cadastro</div>
-                            </a>
-                        </li>
-                        <li class="menu-item" id="itemRegistros">
-                            <a href="pesquisarCertificate.xhtml" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-search"></i>
-                                <div data-i18n="Without navbar">Pesquisar</div>
-                            </a>
-                        </li>
-                        
+                        <h:panelGroup rendered="#{managerLayout.renderedUserCidadao()}">
+                            <li class="menu-header small text-uppercase">
+                                <span class="menu-header-text">Perfil</span>
+                            </li>
+                            <li class="menu-item" id="itemNovaConsulta">
+                                <a href="perfilCidadao.xhtml?view=#{managerLayout.usuarioLogado.cidadao.id}" class="menu-link">
+                                    <i class="menu-icon tf-icons pi pi-user"></i>
+                                    <div data-i18n="Without navbar">Meu Perfil</div>
+                                </a>
+                            </li>
+                        </h:panelGroup>
+
                         <li class="menu-header small text-uppercase">
                             <span class="menu-header-text">Solicitação</span>
                         </li>
@@ -263,23 +277,25 @@
                                 <div data-i18n="Without navbar">Pesquisar</div>
                             </a>
                         </li>
-                        
-                        <li class="menu-header small text-uppercase">
-                            <span class="menu-header-text">Gestores</span>
-                        </li>
-                        <li class="menu-item" id="itemCadastrarNucleo">
-                            <a href="gestor.xhtml" class="menu-link">
-                                <i class="menu-icon tf-icons pi pi-plus-circle"></i>
-                                <div data-i18n="Without navbar">Nova Cadastro</div>
-                            </a>
-                        </li>
-                        <li class="menu-item" id="itemPesquisarNucleo">
-                            <a href="pesquisarSolicitacao.xhtml" class="menu-link">
-                                <i class="menu-icon tf-icons bi bi-search"></i>
-                                <div data-i18n="Without navbar">Pesquisar</div>
-                            </a>
-                        </li>
-                        
+
+                        <h:panelGroup rendered="#{managerLayout.renderedUserGestor()}">
+                            <li class="menu-header small text-uppercase">
+                                <span class="menu-header-text">Gestores</span>
+                            </li>
+                            <li class="menu-item" id="itemCadastrarNucleo">
+                                <a href="gestor.xhtml" class="menu-link">
+                                    <i class="menu-icon tf-icons pi pi-plus-circle"></i>
+                                    <div data-i18n="Without navbar">Nova Cadastro</div>
+                                </a>
+                            </li>
+                            <li class="menu-item" id="itemPesquisarNucleo">
+                                <a href="pesquisarGestor.xhtml" class="menu-link">
+                                    <i class="menu-icon tf-icons bi bi-search"></i>
+                                    <div data-i18n="Without navbar">Pesquisar</div>
+                                </a>
+                            </li>
+                        </h:panelGroup>
+
                     </ul>
                 </aside>
                 <!-- / Menu -->
@@ -309,9 +325,9 @@
                                     <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                                         <div class="avatar avatar-online">
                                             <img src="assets/img/avatars/user2.jpg" class="w-px-40 h-auto rounded-circle" />
-                                            <c:if test="#{managerLayout.notificacaoDespacho()}">
-                                                <span class="notification-badge" >#{managerLayout.despachosRecepcionados()}</span>
-                                            </c:if>
+<!--                                            <c:if test="{managerLayout.notificacaoDespacho()}">
+                                                <span class="notification-badge" >{managerLayout.despachosRecepcionados()}</span>
+                                            </c:if>-->
                                         </div>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end">
@@ -324,8 +340,8 @@
                                                         </div>
                                                     </div>
                                                     <div class="flex-grow-1">
-                                                        <span class="fw-semibold d-block">#{managerLayout.usuarioLogado.login}</span>
-                                                        <small class="text-muted">#{managerLayout.usuarioLogado.tipoUsuario.nome}</small>
+                                                        <span class="fw-semibold d-block">#{managerLayout.loginName()}</span>
+                                                        <!--<small class="text-muted">{managerLayout.usuarioLogado.tipoUsuario.nome}</small>-->
                                                     </div>
                                                 </div>
                                             </a>
@@ -339,32 +355,32 @@
                                                 <span class="align-middle">Meu Perfil</span>
                                             </a>
                                         </li>
-                                        <c:if test="#{managerLayout.menuConfiguracao()}">
+<!--                                        <c:if test="managerLayout.menuConfiguracao()}">
                                             <li>
                                                 <a class="dropdown-item" href="administracao.xhtml">
                                                     <i class="bx bx-globe me-2"></i>
                                                     <span class="align-middle">Administração</span>
                                                 </a>
                                             </li>
-                                        </c:if>
+                                        </c:if>-->
 
-                                        <c:if test="#{managerLayout.menuConfiguracao()}">
+<!--                                        <c:if test="{managerLayout.menuConfiguracao()}">
                                             <li>
                                                 <a class="dropdown-item" href="configuracao.xhtml">
                                                     <i class="bx bx-cog me-2"></i>
                                                     <span class="align-middle">Configuração</span>
                                                 </a>
                                             </li>
-                                        </c:if>
+                                        </c:if>-->
 
-                                        <c:if test="#{managerLayout.notificacaoDespacho()}">
+<!--                                        <c:if test="{managerLayout.notificacaoDespacho()}">
                                             <li>
                                                 <a class="dropdown-item" href="pesquisarDespacho.xhtml">
                                                     <i class="bx bx-mail-send me-2"></i>
                                                     <span class="align-middle">Despachos</span>
                                                 </a>
                                             </li>
-                                        </c:if>
+                                        </c:if>-->
 
                                         <li>
                                             <div class="dropdown-divider"></div>
