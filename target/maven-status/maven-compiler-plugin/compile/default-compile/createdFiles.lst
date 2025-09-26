@@ -25,13 +25,14 @@ com/br/GeoRegulariza/utilitarie/DateUtil.class
 com/br/ProjetoTcc/solicitacao/ManagerSolicitacao.class
 com/br/ProjetoTcc/solicitacao/SolicitacaoServico.class
 com/br/GeoRegulariza/enums/TipoProblema.class
+com/br/ProjetoTcc/converter/CidadaoConverter.class
 com/br/GeoRegulariza/utilitarie/Msg.class
 com/br/ProjetoTcc/bairro/Bairro.class
 com/br/GeoRegulariza/resources/JakartaEE10Resource.class
 com/br/ProjetoTcc/cidadao/Cidadao.class
 com/br/GeoRegulariza/utilitarie/Utils.class
 com/br/GeoRegulariza/utilitarie/Characters.class
-com/br/ProjetoTcc/cpfConverter/CPFConverter.class
 com/br/GeoRegulariza/enums/ManagerEnums.class
 com/br/ProjetoTcc/solicitacao/ManagerSolicitacao$1.class
 com/br/ProjetoTcc/layout/ManagerLayout.class
+com/br/ProjetoTcc/converter/CPFConverter.class

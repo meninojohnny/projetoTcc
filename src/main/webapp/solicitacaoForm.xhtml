@@ -19,6 +19,28 @@
                 </div>
             </h:panelGroup>
 
+            <h:panelGroup id="panelCidadao" rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
+                <div class="form-group col-md-12 mb-3">
+                    <p:outputLabel value="Cidadão" />
+                    <div class="d-flex">
+                        <p:inputText styleClass="form-control" 
+                                     id="cidadao"
+                                     placeholder="Selecione o cidadão"
+                                     disabled="true"
+                                     value="#{managerSolicitacao.solicitacao.cidadao.nome}" />
+
+                        <p:commandButton icon="pi pi-search"
+                                         title="Pesquisar Cidadão"
+                                         process="@this"
+                                         rendered="#{!managerSolicitacao.view}"
+                                         update="solicitacaoForm:dialogSelectCidadao"
+                                         oncomplete="PF('dialogSelectCidadao').show();"
+                                         style="border-radius: 0px 8px 8px 0px;"/>
+                    </div>
+
+                </div>
+            </h:panelGroup>
+
             <div class="form-group col-md-6 mb-3">
                 <p:outputLabel value="Número do Poste (se visível)" />
                 <p:inputText styleClass="form-control" 
@@ -51,6 +73,69 @@
                                  placeholder="Descreva o problema"
                                  value="#{managerSolicitacao.solicitacao.descricao}"/>
             </div>
+
+            <h:panelGroup id="panelEnderecoCidadao" rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
+                <div class="row">
+
+                    <h3 id="titulo-filtro">
+                        <i class="bi bi-geo-alt-fill"></i> Endereço
+                    </h3>
+                    <hr class="mb-3 my-3"/>
+
+                    <div class="form-group col-md-4">
+                        <p:outputLabel value="Cep" />
+                        <div class="d-flex">
+                            <p:inputMask id="cep" 
+                                         styleClass="form-control"
+                                         value="#{managerSolicitacao.solicitacao.cidadao.endereco.cep}" 
+                                         mask="99.999-999"
+                                         disabled="true"
+                                         placeholder="Digite o CEP"
+                                         validateMask="true"/>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group col-md-4 mb-4">
+                        <p:outputLabel value="Rua" />
+                        <p:inputText styleClass="form-control" 
+                                     id="logradouro"
+                                     required="true"
+                                     disabled="true"
+                                     requiredMessage="Este campo é obrigatorio"
+                                     value="#{managerSolicitacao.solicitacao.cidadao.endereco.logradouro}" />
+                    </div>
+
+                    <div class="form-group col-md-4 mb-4">
+                        <p:outputLabel value="Número" />
+                        <p:inputText styleClass="form-control" 
+                                     id="numero"
+                                     required="true"
+                                     disabled="true"
+                                     requiredMessage="Este campo é obrigatorio"
+                                     value="#{managerSolicitacao.solicitacao.cidadao.endereco.numero}" />
+                    </div>
+
+                    <div class="form-group col-md-6 mb-4">
+                        <p:outputLabel value="Bairro" />
+                        <p:inputText styleClass="form-control" 
+                                     id="bairro"
+                                     required="true"
+                                     disabled="true"
+                                     requiredMessage="Este campo é obrigatorio"
+                                     value="#{managerSolicitacao.solicitacao.cidadao.endereco.bairro.nome}" />
+                    </div>
+
+                    <div class="form-group col-md-6 mb-4">
+                        <p:outputLabel value="Complemento" />
+                        <p:inputText styleClass="form-control" 
+                                     id="complemento"
+                                     disabled="true"
+                                     requiredMessage="Este campo é obrigatorio"
+                                     value="#{managerSolicitacao.solicitacao.cidadao.endereco.complemento}" />
+                    </div>
+                </div>
+            </h:panelGroup> 
 
         </div>
 
@@ -87,8 +172,6 @@
             </p:column>
         </p:dataTable>
     </h:panelGroup>
-
-
 
     <center>
         <p:commandButton value="Enviar Solicitação"

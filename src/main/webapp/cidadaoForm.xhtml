@@ -123,7 +123,6 @@
             <hr class="mb-3 my-3"/>
 
             <div class="form-group col-md-4">
-
                 <p:outputLabel value="Cep" />
                 <div class="d-flex">
                     <p:inputMask id="cep" 
@@ -174,8 +173,6 @@
                              requiredMessage="Este campo é obrigatorio"
                              value="#{managerCidadao.cidadao.endereco.bairro.nome}" />
             </div>
-
-
 
             <div class="form-group col-md-6 mb-4">
                 <p:outputLabel value="Complemento" />
@@ -233,6 +230,14 @@
 
                     <p:column headerText="N° Poste">
                         <h:outputText value="#{s.numeroPoste}" />
+                    </p:column>
+                    
+                    <p:column headerText="Tipo Problema">
+                        <h:outputText value="#{s.tipoProblema.name}" />
+                    </p:column>
+                    
+                    <p:column headerText="Tipo Problema">
+                        <h:outputText value="#{s.tipoProblema.name}" />
                     </p:column>
 
                     <p:column headerText="Data">

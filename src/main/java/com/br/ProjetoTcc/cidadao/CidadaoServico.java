@@ -23,7 +23,7 @@ public class CidadaoServico extends GenericService<Cidadao> {
     }
 
     public List<Cidadao> findCidadao(Cidadao cidadao) {
-        String sql = "select c from Cidadao c where c.active = true ";
+        String sql = "select c from Cidadao c where c.active = true";
 
         if (Utils.isNotEmpty(cidadao.getNome())) {
             sql += "and upper(c.nome) like upper(:nome)";

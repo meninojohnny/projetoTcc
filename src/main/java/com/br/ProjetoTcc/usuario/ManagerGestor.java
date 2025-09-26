@@ -87,7 +87,7 @@ public class ManagerGestor extends GenericManager {
     }
     
     public void pesquisar() {
-        this.listGestor = this.usuarioServico.findAll();
+        this.listGestor = this.usuarioServico.findGestor(this.gestor);
     }
     
 }

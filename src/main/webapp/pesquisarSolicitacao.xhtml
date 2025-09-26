@@ -39,7 +39,7 @@
                             <div class="form-group">
                                 <p:outputLabel value="Nome Cidadão" />
                                 <p:inputText id="nome"
-                                             value="#{managerSolicitacao.solicitacao.numeroProtocolo}" 
+                                             value="#{managerSolicitacao.solicitacao.cidadao.nome}" 
                                              styleClass="form-control" />
                             </div>
                         </div>
@@ -52,7 +52,7 @@
                                          id="cpf"
                                          disabled="#{managerCidadao.view}"
                                          requiredMessage="Este campo é obrigatorio"
-                                         value="#{managerCidadao.cidadao.cpf}" 
+                                         value="#{managerSolicitacao.solicitacao.cidadao.cpf}" 
                                          mask="999.999.999-99" 
                                          validateMask="true" />
                         </div> 
@@ -75,7 +75,7 @@
 
             </h:panelGroup>
             <center style="margin: 10px">
-                <p:commandButton value="Pesquisar" icon="pi pi-search" actionListener="#{managerSolicitacao.pesquisar()}" update=" messages tablePanelGroup " process="@this pesquisarSolicitacaoPanelGroup"/>
+                <p:commandButton value="Pesquisar" icon="pi pi-search" actionListener="#{managerSolicitacao.pesquisar()}" update="tablePanelGroup messages" process="@this pesquisarSolicitacaoPanelGroup"/>
                 <p:commandButton value="Limpar" icon="pi pi-eraser" actionListener="#{managerSolicitacao.instanciarSolicitacao()}" update="@form tablePanelGroup" />
             </center>
             <h:panelGroup id="tablePanelGroup">
@@ -111,11 +111,9 @@
                                                 </p:commandButton>-->
                     </p:column>
 
-                    <h:panelGroup rendered="#{managerSolicitacao.renderedUserGestorAdm()}">
-                        <p:column headerText="Cidadão">
-                            <h:outputText value="#{s.cidadao.nome}" />
-                        </p:column>
-                    </h:panelGroup>
+                    <p:column rendered="#{managerSolicitacao.renderedUserGestorAdm()}" headerText="Cidadão">
+                        <h:outputText value="#{managerSolicitacao.nomeCidadao(s)}" />
+                    </p:column>
 
                     <p:column headerText="N° Protocolo">
                         <h:outputText value="#{s.numeroProtocolo}" />
@@ -123,6 +121,10 @@
 
                     <p:column headerText="N° Poste">
                         <h:outputText value="#{s.numeroPoste}" />
+                    </p:column>
+
+                    <p:column headerText="Tipo Problema">
+                        <h:outputText value="#{s.tipoProblema.name}" />
                     </p:column>
 
                     <p:column headerText="Data">

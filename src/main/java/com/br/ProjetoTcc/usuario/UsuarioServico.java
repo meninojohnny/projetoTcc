@@ -6,6 +6,9 @@ package com.br.ProjetoTcc.usuario;
 
 import com.br.GeoRegulariza.Generic.GenericService;
 import com.br.GeoRegulariza.utilitarie.Utils;
+import com.br.ProjetoTcc.grupo.Grupo;
+import com.br.ProjetoTcc.grupo.GrupoServico;
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.faces.context.FacesContext;
 import jakarta.persistence.Query;
@@ -19,6 +22,9 @@ import java.util.List;
 
 @Stateless
 public class UsuarioServico extends GenericService<Usuario> {
+    
+    @EJB
+    private GrupoServico grupoServico;
     
     public UsuarioServico() {
         super(Usuario.class);
@@ -57,9 +63,27 @@ public class UsuarioServico extends GenericService<Usuario> {
     }
     
     public List<Usuario> findGestor(Usuario gestor) {
-        String sql = "select u from Usuario u where u.active = true ";
+        String sql = "select u from Usuario u where u.active = true and :grupo member of u.grupos ";
+        
+        if (Utils.isNotEmpty(gestor.getNome())) {
+            sql += " and upper(u.nome) like upper(:nome)";
+        }
+        
+        if (Utils.isNotEmpty(gestor.getLogin())) {
+            sql += " and upper(u.login) like upper(:login)";
+        }
         
         Query query = getEntityManager().createQuery(sql);
+        Grupo grupo = this.grupoServico.findByName("gestor");
+        query.setParameter("grupo", grupo);
+        
+        if (Utils.isNotEmpty(gestor.getNome())) {
+            query.setParameter("nome", "%" + gestor.getNome() + "%");
+        }
+        
+        if (Utils.isNotEmpty(gestor.getLogin())) {
+            query.setParameter("login", "%" + gestor.getLogin() + "%");
+        }
         
         return query.getResultList();
     }

@@ -24,11 +24,6 @@
                         icon="pi pi-pencil"
                         process="@this"/>
 
-<!--            <p:menuitem value="Excluir"
-                        icon="pi pi-trash"
-                        onclick="PF('removerPacienteViewConfirmDialog').show();"
-                        process="@this"/>-->
-
         </p:splitButton>
     </ui:define>
 
@@ -37,6 +32,101 @@
         <h:form id="solicitacaoForm">
 
             <ui:include src="solicitacaoForm.xhtml"/>
+
+            <p:dialog id="dialogSelectCidadao"
+                      widgetVar="dialogSelectCidadao"
+                      header="Pesquisar Cidadão"
+                      closeOnEscape="true"
+                      draggable="false"
+                      maximizable="false"
+                      minimizable="false"
+                      closable="true"
+                      modal="true"
+                      resizable="false"
+                      showEffect="fade"
+                      hideEffect="fade"
+                      width="1300"
+                      height="500" style="left:0">
+
+                <h:panelGroup id="pesquisarCidadaoPanelGroup">
+                    <div class="row">
+
+                        <div class="form-group col-md-6 mb-4">
+                            <p:outputLabel value="Nome" />
+                            <p:inputText styleClass="form-control" 
+                                         id="nome"
+                                         value="#{managerCidadao.cidadao.nome}" />
+                        </div>
+
+                        <div class="form-group col-md-6 mb-4">
+                            <p:outputLabel value="CPF" />
+                            <p:inputMask styleClass="form-control"
+                                         id="cpf"
+                                         value="#{managerCidadao.cidadao.cpf}" 
+                                         mask="999.999.999-99"
+                                         converter="cpfConverter"
+                                         validateMask="true" />
+                        </div>
+
+                    </div>
+
+                </h:panelGroup>
+                <center style="margin: 10px">
+                    <p:commandButton value="Pesquisar" icon="pi pi-search" actionListener="#{managerCidadao.pesquisar()}" update=" messages tablePanelGroup " process="@this pesquisarCidadaoPanelGroup"/>
+                    <p:commandButton value="Limpar" icon="pi pi-eraser" actionListener="#{managerCidadao.instanciarCidadao()}" update="@form tablePanelGroup" />
+                </center>
+                <h:panelGroup id="tablePanelGroup">
+                    <p:dataTable id="cidadaoTable" 
+                                 var="c"
+                                 paginator="true"
+                                 rows="10"
+                                 paginatorPosition="bottom"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                                 rowsPerPageTemplate="5, 10, 20"
+                                 emptyMessage="Nenhum registro encontrado."
+                                 styleClass="my-md-3" value="#{managerCidadao.listCidadao}">
+                        
+                        <f:facet name="header">
+                            <div class="flex justify-content-between align-items-center" style="text-align: center">
+                                Cidadão (#{managerCidadao.listCidadao.size()})
+                            </div>
+                        </f:facet>
+                        
+                        <p:column  headerText="Ações" >
+                            <p:commandButton
+                                icon="pi pi-plus"
+                                actionListener="#{managerSolicitacao.adicionarCidadao(c)}"
+                                process="@this"
+                                update="solicitacaoForm:dialogSelectCidadao solicitacaoForm:panelCidadao solicitacaoForm:panelEnderecoCidadao"
+                                oncomplete="PF('dialogSelectCidadao').hide();" >
+                                    <f:setPropertyActionListener value="#{c}"
+                                                                 target="#{managerSolicitacao.solicitacao.cidadao}"/>
+                            </p:commandButton>
+                        </p:column>
+
+                        <p:column headerText="Nome">
+                            <h:outputText value="#{c.nome}" />
+                        </p:column>
+
+                        <p:column headerText="CPF">
+                            <h:outputText value="#{c.cpf}" />
+                        </p:column>
+
+                    </p:dataTable>
+
+                    <center style="margin: 10px">
+                        <p:commandButton 
+                            value="Fechar" 
+                            icon="pi pi-eraser" 
+                            update="solicitacaoForm:dialogSelectCidadao"
+                            oncomplete="PF('dialogSelectCidadao').hide();"
+                            />
+                    </center>
+
+                </h:panelGroup>
+
+            </p:dialog>
 
         </h:form>
     </ui:define>

@@ -77,6 +77,15 @@ public class ManagerLayout extends GenericManager {
         }
         return false;
     }
+    
+    public boolean renderedUserAdmin() {
+        for (Grupo g : this.usuarioLogado.getGrupos()) {
+            if (g.getNome().equals("administrador")) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public String loginName() {
         if (Utils.isNotEmpty(this.usuarioLogado)) {

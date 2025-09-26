@@ -75,7 +75,7 @@ public class ManagerCidadao extends GenericManager {
 
                 this.cidadaoServico.save(cidadao);
                 
-                System.out.println("Cidadao: " + cidadao.getId());
+                this.usuario.setCidadao(cidadao);
 
                 this.usuarioServico.save(usuario);
 
